@@ -1,0 +1,362 @@
+﻿20160918
+
+****Not followed******************************
+XML Standards Reference https://msdn.microsoft.com/en-us/library/ms256177(v=vs.110).aspx
+**********************************************
+
+XML Documents and Data https://msdn.microsoft.com/en-us/library/2bcctyt8(v=vs.110).aspx 1/5/17 THIS IS THE BASE. AFTER LINQ TO XML GO TO XSLT TRANSFORMATIONS
+
+=> XML Processing Options https://msdn.microsoft.com/en-us/library/bb669131(v=vs.110).aspx 
+	LINQ to XML
+	XmlReader - fast, non cached forwward only
+	XmlWriter - fast non cached forward only
+	XmlDocument - In memor. Create insert, remove modify nodes by using methods and properties of DOM model
+	XPathNaviagator - cursor codel. Can use XPathDocument or XmlDocument object. Xpath queries and XSLT transforms
+	XslCompiledtransforms - transform XML data using XSL transformations
+
+TODO DataSet and XmlDataDocument Synchronization =>https://msdn.microsoft.com/en-us/library/1t4362sd(v=vs.110).aspx 
+
+****************************************************************************************************************
+Process XML Data Using the DOM Model Start
+****************************************************************************************************************
+
+		=> Processing XML Data In-Memory
+			XmlDocument -> In ClientFiles 729 references
+			XPathDocument -> 23 references in ClientFiles
+			LINQ to XML -> System.Xml.Linq  referenceed 133 times in ClientFiles.
+			We're using all. Mostly XMLDocument and LINQ TO XML.
+
+		1. => Process XML Data Using the DOM Model https://msdn.microsoft.com/en-us/library/t058x2df(v=vs.110).aspx
+			XML Document Object Model (DOM) - used for editing as opposed to XMLReader which is non-cached, forward only
+				The DOM is most useful for reading XML data into memory to change its structure, to add or remove nodes, or to modify the data held by a node as in		the text contained by an element. However, other classes are available that are faster than the DOM in other scenarios. For fast, non-cached, forward-only stream access to XML, use the XmlReader and XmlWriter. If you need random access with a cursor model and XPath, use the XPathNavigator	class.
+
+			1.1. => Types of XML Nodes https://msdn.microsoft.com/en-us/library/3k5w5zc3(v=vs.110).aspx
+					List of node types
+				=> Node Types http://www.w3schools.com/xml/dom_nodetype.asp
+					XmlEntityReference -> no references in eCLAS. What is this for?				                         MappingObject_HierarchyToXMLData.cs
+			
+
+			1.2. => XML Document Object Model (DOM) Hierarchy https://msdn.microsoft.com/en-us/library/xe9470fe(v=vs.110).aspx
+
+			1.3. => Mapping the Object Hierarchy to XML Data https://msdn.microsoft.com/en-us/library/a3bszkbd(v=vs.110).aspx
+
+			1.4. => XML Document Creation https://msdn.microsoft.com/en-us/library/8ekkefwb(v=vs.110).aspx
+				There are two ways to create an XML document. One way is to create an XmlDocument with no parameters. 
+				The other way is to create an XmlDocument and pass it an XmlNameTable as a parameter. 
+				The following example shows how to create a new, empty XmlDocument using no parameters.
+				XmlDocument doc = new XmlDocument();
+				Once a document is created, you can load it with data from a string, stream, URL, text reader, or an XmlReader derived class using the Load method. There is also another load method, the LoadXML method, which reads XML from a string. For more information on the various Load methods, see Reading an XML Document into the DOM.
+				We are not using XmlTableName at CFC. 
+
+			1.5. => Reading an XML Document into the DOM https://msdn.microsoft.com/en-us/library/azsy1tw2(v=vs.110).aspx
+				XML information is read into memory from different formats. It can be read from a string, stream, URL, text reader, or a class derived from the XmlReader.
+				Either the overloaded Load() or LoadXML() methods. 		
+				ReadingAnXMLDocumentIntoTheDOM.cs
+
+					1.5.1. => Accessing Attributes in the DOM https://msdn.microsoft.com/en-us/library/hk61a712(v=vs.110).aspx
+					attributes are properties of the element not its children. 
+					AccessingAttributesInTheDOM
+
+			1.6  => Inserting Nodes into an XML Document https://msdn.microsoft.com/en-us/library/0h7a3akd(v=vs.110).aspx
+		
+					1.61. => Create New Nodes in the DOM https://msdn.microsoft.com/en-us/library/k44daxya(v=vs.110).aspx
+						There are Create() for different node types. My sample code inserts a comment node before the book node. 
+						CreateNewNodesInTheDOM.cs
+						I also add an attribute to each book node here. 
+
+			1.7 => Removing Nodes, Content, and Values from an XML Document https://msdn.microsoft.com/en-us/library/etdhs5bz(v=vs.110).aspx
+		
+					1.71. Removing Nodes from the DOM https://msdn.microsoft.com/en-us/library/k915c8sf(v=vs.110).aspx
+					RemovingNodesFromTheDOM.cs - we add the Text of the node to parent node as attribute before removing.
+
+			1.8 => Modifying Nodes, Content, and Values in an XML Document https://msdn.microsoft.com/en-us/library/1w7dc16f(v=vs.110).aspx
+					ModifyingNodesContentValuesInAnXMLDocument.cs
+
+			1.9 => Validating an XML Document in the DOM https://msdn.microsoft.com/en-us/library/w5aahf2a(v=vs.110).aspx
+				I didn't do the code for this one. It's pretty involved. I'd be cutting and pasting. 
+				The important thing here is that validating allows typed XML data to replace previously untyped XML data.
+
+
+			1.10 => Saving and Writing a Document https://msdn.microsoft.com/en-us/library/94cx336b(v=vs.110).aspx
+				An XMLDeclaration must be the fist line in an XML document. If it not present the version is assumed to be 1.0. For
+				2.0 XMLDeclaration is required. XMLDeclaration is required to containd version info. Encoding declaration is optional. 
+						The version number, <?xml version="1.0"?>
+						The encoding declaration, <?xml version="1.0" encoding="UTF-8"?>
+
+			*** 1.11 => Select Nodes Using XPath Navigation https://msdn.microsoft.com/en-us/library/d271ytdx(v=vs.110).aspx
+			I'm using this code through other classes
+			SelectSingleNode() 
+			SelectNodes()
+				XPathInvestigations.cs - here we for loop through collections of nodes
+				SelectXMLDataUsingXPathNavigator.cs - here we use XPathNavigators. We then populate XPathNodeIterators form the XPathNavigators
+
+
+			1.12 => Resolving External Resources https://msdn.microsoft.com/en-us/library/5fcwybb2(v=vs.110).aspx
+				Nothing I'm going to remember when I need it!
+
+			1.13 => Object Comparison Using XmlNameTable https://msdn.microsoft.com/en-us/library/ddcbtzs4(v=vs.110).aspx
+				I'm not writing any code here either. 
+				A XMLNameTable allows the user to define tag names. There is an performance increase in using name tables to 
+				see if tag exist in the document. 
+				See https://blogs.msdn.microsoft.com/mfussell/2004/04/28/xmlnametable-the-shiftstick-of-system-xml/
+
+			1.14 => Node Collections in NamedNodeMaps and NodeLists https://msdn.microsoft.com/en-us/library/fs9d6e25(v=vs.110).aspx
+				1.14.1 => Unordered Node Retrieval by Name or Index https://msdn.microsoft.com/en-us/library/7sf9z378(v=vs.110).aspx
+					XmlNamedNodeMap - unordered
+					XMLNodeList - ordered
+				1.14.2 => Ordered Node Retrieval by Index https://msdn.microsoft.com/en-us/library/hctcaayx(v=vs.110).aspx
+
+****************************************************************************************************************
+Process XML Data Using the DOM Model END
+****************************************************************************************************************
+
+****************************************************************************************************************
+XPath Syntax START  THIS NEEDS TO BE REVIEWED AS OF 12/30/16
+****************************************************************************************************************
+2. => XPath Syntax https://msdn.microsoft.com/en-us/library/ms256471(v=vs.110).aspx
+			2.1 => Context for XPath Expressions https://msdn.microsoft.com/en-us/library/ms256199(v=vs.110).aspx
+				The evaluation of an XPath expression depends on the context against which the expression operates. 
+				The context consists of the node against which the expression is avaluated and its associated environment.
+					position of context node inthe document order relative to its siblings
+					size of context - number of siblings of the context node plus one
+					variable bindings with which references to a variable can be resolved
+					function library
+					namespace declarations inscope for the expression
+
+					Here are some examples referencing inventory.xml
+						Current context ./
+						Document root /bookstore
+						Root element /*
+						Recursive descent //author
+						Specific elements bookstore/book from the current context
+
+			2.2 => Operators and Special Expressions  https://msdn.microsoft.com/en-us/library/ms256122(v=vs.110).aspx
+
+			2.3 => XPath Collections https://msdn.microsoft.com/en-us/library/ms256090(v=vs.110).aspx
+
+			2.4 => Filter and Filter Patterns https://msdn.microsoft.com/en-us/library/ms256060(v=vs.110).aspx
+
+			2.5 => Set Operations https://msdn.microsoft.com/en-us/library/ms256074(v=vs.110).aspx
+				The |, or union, operator returns the union of its two operands, which must be node-sets. 
+
+			2.6  Location Paths https://msdn.microsoft.com/en-us/library/ms256039(v=vs.110).aspx
+				
+				2.6.1 Location Steps https://msdn.microsoft.com/en-us/library/ms256472(v=vs.110).aspx
+				A location step selects a set of nodes (a node-set) relative to the context node.
+				There are three parts to a location step: an optional axis, a node test, and an optional predicate. 
+				The syntax for a location step is the axis name followed by a double colon, then the node test, and finally zero or more 
+				predicates, each in square brackets. The most basic form of this syntax is as follows:
+				axis::nodetest[predicate]
+
+				2.6.2 Axes https://msdn.microsoft.com/en-us/library/ms256456(v=vs.110).aspx
+				A location path uses an axis to specify the relationship between the nodes selected by the location step and the context node.
+					ancestor::
+					ancestor-or-self::
+					attribute::
+					child::
+					descendant::
+					descendant-or-self::
+					following::
+					following-sibling::
+					namespace::
+					parent::
+					preceding::
+					preceding-sibling::
+
+				2.6.3 Node Tests https://msdn.microsoft.com/en-us/library/ms256450(v=vs.110).aspx
+					The node test is the only required portion of an XPath location step. As such, understanding it is 
+					critical to successfully employing XPath expressions.
+					There are three general types of node test: 
+					• A name test, which uses an expanded name and the relationship of that name to the specified axis to identify the nodes to be selected.
+					• A node type test, which selects nodes based strictly upon their node type.
+					• A targeted processing instruction test, which selects only those processing instruction nodes that match the specified type.
+
+					2.6.3.4 Name tests https://msdn.microsoft.com/en-us/library/ms256451(v=vs.110).aspx
+						A name test is the most common form of a node test since it allows you to explicitly specify the name of the nodes that you 
+						want to select. However, just specifying a node's name does not automatically result in the selection of the appropriate node 
+						since a document tree may have different node types with the same name. To select the appropriate node, a name test selects 
+						only those nodes whose name matches the specified name and whose node type matches the principal node type of the specified axis.
+
+
+
+			2.7 => XPath Examples https://msdn.microsoft.com/en-us/library/ms256086(v=vs.110).aspx
+				
+
+
+
+****************************************************************************************************************
+XPath Syntax  END
+****************************************************************************************************************
+
+****************************************************************************************************************
+XPath Functions START THIS NEEDS TO BE REVIEWED AS OF 12/30/16
+****************************************************************************************************************
+3. => XPath functions https://msdn.microsoft.com/en-us/library/ms256138(v=vs.110).aspx
+
+	3.1 => Node-Set Functions
+
+****************************************************************************************************************
+XPath FUnctions  END
+****************************************************************************************************************
+
+****************************************************************************************************************
+Process XML Data Using XPath Data Model START
+****************************************************************************************************************
+	4.0 => Process XML Data Using the XPath Data Model https://msdn.microsoft.com/en-us/library/87274khy(v=vs.110).aspx
+			The XPathDocument class provides a fast, read-only, in-memory representation of an XML document using the XPath data model. 
+			The XmlDocument class provides an editable in-memory representation of an XML document implementing W3C Document Object Model (DOM) 
+			Level 1 Core and Core DOM Level 2. Both classes implement the IXPathNavigable interface and return an XPathNavigator object 
+			used to select, evaluate, navigate, and in some cases, edit the underlying XML data.
+
+			The XPathNavigator class in the System.Xml.XPath namespace is an abstract class which defines a cursor model for navigating and editing 
+			XML information items as instances of the XQuery 1.0 and XPath 2.0 Data Model.
+			An XPathNavigator object is created from a class that implements the IXPathNavigable interface such as the XPathDocument and XmlDocument classes. 
+			XPathNavigator objects created by XPathDocument objects are read-only while XPathNavigator objects created by XmlDocument objects can be edited. 
+			An XPathNavigator object's read-only or editable status is determined using the CanEdit property of the XPathNavigator class.
+
+		4.1 => Reading XML Data using XPathDocument and XmlDocument https://msdn.microsoft.com/en-us/library/eh3exdc4(v=vs.110).aspx
+			Create XPathDocument and XmlDocument. all we're doing here/ 
+			ProcessXMLDataUsingtheXPathDataModel.cs
+
+		4.2 => Selecting, Evaluating and Matching XML Data using XPathNavigator https://msdn.microsoft.com/en-us/library/ms172425(v=vs.110).aspx
+			The XPathNavigator class provides methods to select nodes in an XPathDocument or XmlDocument object using an XPath query, 
+			evaluate and examine the results of an XPath expression, and determine if a node in an XPathDocument or XmlDocument object 
+			matches a given XPath expression. These and other concepts that relate to selecting, evaluating and matching nodes 
+			in an XPathDocument or XmlDocument object are described in the following topics.
+			No code for this. 
+
+			4.2.1 => Select XML Data Using XPathNavigator https://msdn.microsoft.com/en-us/library/4x3f76ta(v=vs.110).aspx
+				XPathNavigator class provides a set of methods used to select a set of nodes in an XPathDocument or XmlDocument object
+				using an XPath expression. Once selected, you can iterate over the selected set of nodes. 
+				SelectXMLDataUsingXPathNavigator.cs
+
+			4.2.2 => Evaluate XPath Expressions using XPathNavigator https://msdn.microsoft.com/en-us/library/w97fy75f(v=vs.110).aspx
+					Evaluate_XPath_Expressions_using_XPathNavigator.cs
+
+			4.2.3 Matching Nodes using XPathNavigator  https://msdn.microsoft.com/en-us/library/9x7a0ztb(v=vs.110).aspx
+				The XPathNavigator class provides the Matches method to determine if a node matches an XPath expression. 
+				The Matches method takes an XPath expression as input and returns a Boolean that indicates if the current node matches
+			   the given XPath expression or the given compiled XPathExpression object.
+				For example see XPathNavigator.Matches Method (XPathExpression) https://msdn.microsoft.com/en-us/library/6t842wfw(v=vs.110).aspx
+				Matching Nodes using XPathNavigator.cs
+
+			4.2.4 Node Types Recognized with XPath Queries https://msdn.microsoft.com/en-us/library/ms172426(v=vs.110).aspx
+				A list of node types recognized by XPath. We'll see more later with "Node Set Navigation Using XPathNavigator" 
+				=> https://msdn.microsoft.com/en-us/library/0ze4yhyf(v=vs.110).aspx
+				&  "Attribute and Namespace Node Navigation Using XPathNavigator" => https://msdn.microsoft.com/en-us/library/439wyfyh(v=vs.110).aspx
+
+			4.2.5 XPath QUeries and Namespaces https://msdn.microsoft.com/en-us/library/e5t11tzt(v=vs.110).aspx
+				Stuff about namespaces that will probably bite me inthe butt later. I'm not sure how muc we are using this in COnfigurated coverages. 
+
+            4.2.6 Compiled XPath Expressions https://msdn.microsoft.com/en-us/library/093b7219(v=vs.110).aspx
+			An XPathExpression object represents a compiled XPath query returned from either the static Compile method of the 
+			XPathExpression class or the Compile method of the XPathNavigator class.
+			A compiled XPath query represented by an XPathExpression object is useful if the same XPath query is being used more than once.
+			For example, when calling the Select method multiple times, instead of using a string representing the XPath query each time, 
+			use the Compile method of the XPathExpression class or the Compile method of the XPathNavigator class to compile and cache 
+			the XPath query in an XPathExpression object for reuse and improved performance.
+			See "Matching Nodes using XPathNavigator.cs". We build the XPathExpresion outside a WHILE loop. In the WHILE loop we use it 
+			repeatedly. 
+			Compiled XPath Expressions.cs - note the differnce between the 2 EVALUATEs 
+
+			4.2.7 XPath Namespace Navigation https://msdn.microsoft.com/en-us/library/ee712570(v=vs.110).aspx
+				Stuff about namespaces that will probably bite me inthe butt later. I'm not sure how muc we are using this in COnfigurated coverages. 
+
+		4.3 Accessing XML Data using XPathNavigator https://msdn.microsoft.com/en-us/library/yy355fzd(v=vs.110).aspx
+			The XPathNavigator class provides methods to navigate nodes, extract XML data and access strongly typed 
+			XML data in an XPathDocument or XmlDocument object.
+
+			4.3.0 Node Set Navigation Using XPathNavigator https://msdn.microsoft.com/en-us/library/0ze4yhyf(v=vs.110).aspx
+			NodeSet Navigation Using XPathNavigator.cs
+			navigate node sets in an XPathDocument or XmlDocument object
+
+			4.3.1 Attribute and Namespace Node Navigation Using XPathNavigator https://msdn.microsoft.com/en-us/library/439wyfyh(v=vs.110).aspx
+				Attribute and Namespace Node Navigation Using XPathNavigator.cs
+
+			4.3.2 Extract XML Data Using XPathNavigator https://msdn.microsoft.com/en-us/library/0ysh8kd0(v=vs.110).aspx
+			There are several different ways to represent an XML document in the Microsoft .NET Framework. This includes using a String, or 
+			by using the XmlReader, XmlWriter, XmlDocument, or XPathDocument classes. To facilitate moving between these 
+			different representations of an XML document, the XPathNavigator class provides 
+			a number of methods and properties for extracting the XML as a String, XmlReader object or XmlWriter object.
+			Extract_XML_Data_Using_XPathNavigator.cs
+			XmlWriterExample.cs
+
+			4.3.3 Acessing Strongly Typed XML Data Using XPathNavigator 
+			Enough to know it is here.
+
+			4.3.4 User Defined Functions and Variables
+			Enough to know it is here.
+
+		4.4 Editing XML Data using XPathNavigator  https://msdn.microsoft.com/en-us/library/sb9ca14t(v=vs.110).aspx
+			The XPathNavigator class provides methods to insert, modify and remove nodes and values from an XML document contained in an XmlDocument object. 
+			In order to use any of these methods to insert, modify, and remove nodes and values, the XPathNavigator object must be editable, that is, its CanEdit property must be true.
+
+			4.4.1 Insert XML Data using XPathNavigator  https://msdn.microsoft.com/en-us/library/5x8bxy86(v=vs.110).aspx
+				CanEdit property of XPathNavigator must be true.
+				XPathNavigator must be created from XmlDocument object. XPathNavigator objects created from
+				XpathDOcument are read-only. 
+				Insert XML Data using XPathNavigator.cs
+
+            4.4.2 Modeify XML data using XPathNavigator https://msdn.microsoft.com/en-us/library/zx28tfx1(v=vs.110).aspx
+			The XPathNavigator class provides a set of methods used to modify nodes and values in an XML document. In order to use these methods, the XPathNavigator object must be editable, that is, its CanEdit property must be true.
+
+XPathNavigator objects that can edit an XML document are created by the CreateNavigator method of the XmlDocument class. XPathNavigator objects created by the XPathDocument class are read-only and any attempt to use the editing methods of an XPathNavigator object created by an XPathDocument object result in a NotSupportedException.
+			All of this was covered in the previous topic, Insert XML Data using XPathNavigator. See Insert XML Data using XPathNavigator.cs
+
+			4.4.3 Remove XMLData using XPathnavigator https://msdn.microsoft.com/en-us/library/xws54wwx(v=vs.110).aspx
+			I'm not going to write any code for this. 
+
+****************************************************************************************************************
+Process XML Data Using XPath Data Model END
+****************************************************************************************************************
+
+****************************************************************************************************************
+Process Process XML Data Using LINQ to XML START
+****************************************************************************************************************
+5. Process XML Data Using LINQ to XML https://msdn.microsoft.com/en-us/library/bb669128(v=vs.110).aspx
+There isn't really anything here. There are references to LINQ to XML https://msdn.microsoft.com/en-us/library/bb387098(v=vs.110).aspx
+We'll follow this tree.
+5.0 LINQ to XML https://msdn.microsoft.com/en-us/library/bb387098(v=vs.110).aspx
+
+	5.1 Getting Started (LINQ to XML) https://msdn.microsoft.com/en-us/library/bb387044(v=vs.110).aspx
+
+		5.1.2 LINQ to XML Overview https://msdn.microsoft.com/en-us/library/bb387061(v=vs.110).aspx
+****************************************************************************************************************
+Process Process XML Data Using LINQ to XML END
+****************************************************************************************************************
+
+
+
+****************************************************************************************************************
+Process XSLT Transformation https://msdn.microsoft.com/en-us/library/14689742(v=vs.110).aspx THIS NEEDS TO BE COVERED
+****************************************************************************************************************
+
+****************************************************************************************************************
+Further reading 
+****************************************************************************************************************
+Chapter 9 — Improving XML Performance		
+https://msdn.microsoft.com/en-us/library/ff647804.aspx
+
+XPathExpression CLass
+https://msdn.microsoft.com/en-us/library/system.xml.xpath.xpathexpression(v=vs.110).aspx
+
+XPathNavigator Class
+https://msdn.microsoft.com/en-us/library/system.xml.xpath.xpathnavigator(v=vs.110).aspx
+
+
+
+
+			
+****************************************************************************************************************
+Performance notes
+****************************************************************************************************************
+Compiled XPath Expressions https://msdn.microsoft.com/en-us/library/093b7219(v=vs.110).aspx
+Higher Performance XPath Expressions
+For better performance, use the most specific XPath expression possible in your queries. For example, if the book node is a child node of the bookstore node and the 
+bookstore node is the top-most element in an XML document, using the XPath expression /bookstore/book is faster than using //book. The //book XPath expression will 
+scan every node in the XML tree to identify matching nodes.
+Additionally, using the node set navigation methods supplied by the XPathNavigator class may result in improved performance over the selection methods supplied 
+by the XPathNavigator class in cases where your selection criteria are simple. For example, if you need to select the first child of the current node, 
+it is faster to use the MoveToFirst method than to use the child::*[1] XPath expression and the Select method.
+
+
